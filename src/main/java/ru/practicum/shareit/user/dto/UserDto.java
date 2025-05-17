@@ -16,5 +16,6 @@ public class UserDto {
     private String email;
 
     public interface CreateValidation {}
+
     public interface UpdateValidation {}
 }
