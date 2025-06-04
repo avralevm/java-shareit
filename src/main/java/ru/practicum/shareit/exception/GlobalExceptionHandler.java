@@ -70,4 +70,30 @@ public class GlobalExceptionHandler {
         log.error("[ERROR] Попытка дублирования ресурса: {}", ex.getMessage());
         return fieldErrors;
     }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(ValidationException.class)
+    public Map<String, Object> handleValidationException(ValidationException ex) {
+        Map<String, Object> fieldErrors = new HashMap<>();
+        fieldErrors.put("timestamp", LocalDateTime.now());
+        fieldErrors.put("status", HttpStatus.CONFLICT.value());
+        fieldErrors.put("error", "Validation Error");
+        fieldErrors.put("message", ex.getMessage());
+
+        log.error("[ERROR] Ошибка валидации cущностей: {}", ex.getMessage());
+        return fieldErrors;
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadRequestException.class)
+    public Map<String, Object> handleBadRequestException(BadRequestException ex) {
+        Map<String, Object> fieldErrors = new HashMap<>();
+        fieldErrors.put("timestamp", LocalDateTime.now());
+        fieldErrors.put("status", HttpStatus.CONFLICT.value());
+        fieldErrors.put("error", "BadRequestException Error");
+        fieldErrors.put("message", ex.getMessage());
+
+        log.error("[ERROR] Ошибка операции: {}", ex.getMessage());
+        return fieldErrors;
+    }
 }

@@ -9,8 +9,10 @@ import lombok.Data;
 @Builder
 public class UserDto {
     private Long id;
+
     @NotBlank(groups = CreateValidation.class, message = "Имя не может быть пустым")
     private String name;
+
     @NotBlank(groups = CreateValidation.class, message = "Email не может быть пустым")
     @Email(groups = {CreateValidation.class, UpdateValidation.class}, message = "Некорректный формат email")
     private String email;
