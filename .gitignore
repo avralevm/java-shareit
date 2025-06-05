@@ -31,3 +31,36 @@ build/
 
 ### VS Code ###
 .vscode/
+
+### Logs ###
+ *.log
+ logs/
+ log/
+
+ ### Application Properties ###
+ application-*.properties
+ !application.properties
+ !application-test.properties
+
+ ### Compiled files ###
+ *.class
+ *.jar
+ *.war
+ *.ear
+ *.zip
+ *.tar.gz
+ *.rar
+
+ ### Maven ###
+ .mvn/
+ mvnw
+ mvnw.cmd
+
+ ### Gradle ###
+ .gradle/
+ gradle-app.setting
+ !gradle-wrapper.jar
+
+ ### Database ###
+ /volumes/
+ volumes/

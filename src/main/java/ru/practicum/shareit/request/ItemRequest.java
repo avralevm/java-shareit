@@ -1,20 +1,24 @@
 package ru.practicum.shareit.request;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Past;
+import jakarta.persistence.*;
 import lombok.Data;
 import ru.practicum.shareit.user.model.User;
-
 import java.time.LocalDateTime;
 
 @Data
+@Entity
+@Table(name = "requests")
 public class ItemRequest {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @NotBlank(message = "Описание не может быть пустым")
+
+    @Column
     private String description;
-    @NotNull(message = "Пользователь создавший запрос должен быть указан")
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "requestor_id")
     private User requestor;
-    @Past(message = "Дата создания запроса не может быть в будущем")
+
     private LocalDateTime created;
 }

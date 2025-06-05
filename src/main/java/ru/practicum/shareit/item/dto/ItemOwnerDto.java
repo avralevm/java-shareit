@@ -10,17 +10,16 @@ import java.util.List;
 
 @Data
 @Builder
-public class ItemDto {
+public class ItemOwnerDto {
     private Long id;
-    @NotBlank(groups = {CreateValidation.class}, message = "Имя не может быть пустым")
+    @NotBlank(message = "Имя не может быть пустым")
     private String name;
-    @NotBlank(groups = {CreateValidation.class}, message = "Описание не может быть пустым")
+    @NotBlank(message = "Описание не может быть пустым")
     private String description;
-    @NotNull(groups = {CreateValidation.class}, message = "Статус не может быть пустым")
+    @NotNull(message = "Статус не может быть пустым")
     private Boolean available;
-    private List<CommentDto> comments;
     private BookingDto lastBooking;
     private BookingDto nextBooking;
 
-    public interface CreateValidation {}
+    List<CommentDto> comments;
 }
