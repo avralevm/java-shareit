@@ -15,6 +15,8 @@ import ru.practicum.shareit.item.model.Comment;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
+import ru.practicum.shareit.request.model.ItemRequest;
+import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.dto.UserDto;
 import ru.practicum.shareit.user.dto.UserMapper;
 import ru.practicum.shareit.user.model.User;
@@ -31,6 +33,7 @@ import java.util.stream.Collectors;
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserService userService;
+    private final ItemRequestRepository itemRequestRepository;
     private final BookingRepository bookingRepository;
     private final CommentRepository commentRepository;
     private final UserMapper userMapper;
@@ -78,24 +81,44 @@ public class ItemServiceImpl implements ItemService {
 
     @Override
     @Transactional(readOnly = true)
-    public ItemDto getItemById(Long id) {
-        Item item = findItemOrThrow(id);
-        ItemDto itemDto = itemMapper.toItemDto(item);
+    public ItemOwnerDto getItemById(Long itemId, Long userId) {
+        Item item = findItemOrThrow(itemId);
+        ItemOwnerDto itemOwnerDto = itemMapper.toItemOwnerDto(item);
 
-        List<Comment> comments = commentRepository.findAllByItemId(id);
-        itemDto.setComments(comments.stream()
+        List<Comment> comments = commentRepository.findAllByItemId(itemId);
+        itemOwnerDto.setComments(comments.stream()
                 .map(commentMapper::toCommentDto)
                 .collect(Collectors.toList()));
 
-        return itemDto;
+        if (item.getOwner().getId().equals(userId)) {
+            Booking lastBooking = bookingRepository.findLastBooking(itemId);
+            if (lastBooking != null) {
+                itemOwnerDto.setLastBooking(bookingMapper.toBookingDto(lastBooking));
+            }
+
+            Booking nextBooking = bookingRepository.findNextBooking(itemId);
+            if (nextBooking != null) {
+                itemOwnerDto.setNextBooking(bookingMapper.toBookingDto(nextBooking));
+            }
+        }
+
+        return itemOwnerDto;
     }
 
     @Override
     public ItemDto createItem(ItemDto itemDto, Long userId) {
         UserDto ownerDto = userService.getUserById(userId);
+
         User owner = userMapper.toUser(ownerDto);
         Item item = itemMapper.toItem(itemDto);
         item.setOwner(owner);
+
+        Long requestId = itemDto.getRequestId();
+        if (requestId != null) {
+            Optional<ItemRequest> itemRequest = itemRequestRepository.findById(requestId);
+            itemRequest.ifPresent(item::setRequest);
+        }
+
         Item createdItem = itemRepository.save(item);
         return itemMapper.toItemDto(createdItem);
     }

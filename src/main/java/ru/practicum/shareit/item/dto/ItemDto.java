@@ -4,7 +4,6 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
-import ru.practicum.shareit.booking.dto.BookingDto;
 
 import java.util.List;
 
@@ -16,11 +15,11 @@ public class ItemDto {
     private String name;
     @NotBlank(groups = {CreateValidation.class}, message = "Описание не может быть пустым")
     private String description;
+    private Long ownerId;
+    private Long requestId;
     @NotNull(groups = {CreateValidation.class}, message = "Статус не может быть пустым")
     private Boolean available;
     private List<CommentDto> comments;
-    private BookingDto lastBooking;
-    private BookingDto nextBooking;
 
     public interface CreateValidation {}
 }
