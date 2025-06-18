@@ -1,10 +1,14 @@
 package ru.practicum.shareit.request.dto;
 
-import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class ItemRequestCreateDto {
-    @NotNull(message = "Текст запроса должен быть указан")
+    @NotBlank(message = "Текст запроса должен быть указан")
     private String description;
 }

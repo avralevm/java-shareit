@@ -1,5 +1,6 @@
 package ru.practicum.shareit.item;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -56,7 +57,7 @@ public class ItemController {
     }
 
     @PostMapping("/{itemId}/comment")
-    public ResponseEntity<Object> createComment(@PathVariable Long itemId, @RequestBody CommentDtoCreate commentDto,
+    public ResponseEntity<Object> createComment(@PathVariable Long itemId, @Valid @RequestBody CommentDtoCreate commentDto,
                                                 @RequestHeader("X-Sharer-User-Id") Long userId) {
         log.info("[POST] Создание комментария для предмета с id: {}", itemId);
         return itemClient.createComment(itemId, commentDto, userId);
