@@ -40,13 +40,13 @@ public class ItemController {
     @PatchMapping("/{id}")
     public ItemDto updateItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long userId,
                               @PathVariable Long id) {
-        log.info("[PATCH] Обновлены данные пользователя c ID: {}", id);
+        log.info("[PATCH] Обновлены данные пользователя c id: {}", id);
         return itemService.updateItem(itemDto, userId, id);
     }
 
     @DeleteMapping("/{id}")
     public void deleteItem(@PathVariable Long id) {
-        log.info("[DELETE] Удаление данных пользователя c ID: {}", id);
+        log.info("[DELETE] Удаление данных пользователя c id: {}", id);
         itemService.deleteItem(id);
     }
 
@@ -58,7 +58,7 @@ public class ItemController {
 
     @PostMapping("{itemId}/comment")
     public CommentDto createComment(@PathVariable Long itemId, @RequestBody CommentDto commentDto, @RequestHeader("X-Sharer-User-Id") Long userId) {
-        log.info("[POST] Создание комментария для предмета с ID: {} от пользователя с ID: {}", itemId, userId);
+        log.info("[POST] Создание комментария для предмета с id: {} от пользователя с id: {}", itemId, userId);
         return itemService.createComment(itemId, commentDto, userId);
     }
 }

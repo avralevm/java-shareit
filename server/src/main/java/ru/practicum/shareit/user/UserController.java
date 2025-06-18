@@ -29,13 +29,13 @@ public class UserController {
     }
 
     @PostMapping
-    public UserDto createUser(@Validated(UserDto.CreateValidation.class) @RequestBody UserDto userDto) {
+    public UserDto createUser(@RequestBody UserDto userDto) {
         log.info("[POST] Создание пользователя");
         return userService.createUser(userDto);
     }
 
     @PatchMapping("/{id}")
-    public UserDto updateUser(@Validated(UserDto.UpdateValidation.class) @RequestBody UserDto userDto,
+    public UserDto updateUser(@RequestBody UserDto userDto,
                               @PathVariable Long id) {
         log.info("[PATCH] Обновлены данные пользователя c ID: {}", id);
         return userService.updateUser(userDto, id);
