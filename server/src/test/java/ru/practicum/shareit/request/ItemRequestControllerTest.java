@@ -40,6 +40,7 @@ class ItemRequestControllerTest {
             .created(LocalDateTime.now().minusDays(1))
             .items(List.of())
             .build();
+
     private final ItemRequestCreate testRequestCreate = new ItemRequestCreate("Test request description");
 
     @Test
