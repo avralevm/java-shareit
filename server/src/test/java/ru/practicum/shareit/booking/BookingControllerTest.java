@@ -28,6 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(BookingController.class)
 class BookingControllerTest {
+    private final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @Autowired
     private MockMvc mockMvc;
@@ -58,7 +59,7 @@ class BookingControllerTest {
         when(bookingService.createBooking(any(BookingRequest.class), anyLong())).thenReturn(testBooking);
 
         mockMvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testBookingRequest)))
                 .andExpect(status().isOk())
@@ -73,7 +74,7 @@ class BookingControllerTest {
         when(bookingService.getBookingById(anyLong(), anyLong())).thenReturn(testBooking);
 
         mockMvc.perform(get("/bookings/1")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(testBooking.getId()));
@@ -91,7 +92,7 @@ class BookingControllerTest {
                 .thenReturn(approvedBooking);
 
         mockMvc.perform(patch("/bookings/1?approved=true")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.status").value("APPROVED"));
@@ -105,7 +106,7 @@ class BookingControllerTest {
                 .thenReturn(List.of(testBooking));
 
         mockMvc.perform(get("/bookings")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .param("state", "ALL")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -121,7 +122,7 @@ class BookingControllerTest {
                 .thenReturn(List.of(testBooking));
 
         mockMvc.perform(get("/bookings/owner")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .param("state", "ALL")
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -143,7 +144,7 @@ class BookingControllerTest {
                 .thenThrow(new ValidationException("Invalid dates"));
 
         mockMvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest)))
                 .andExpect(status().isBadRequest());
@@ -155,7 +156,7 @@ class BookingControllerTest {
                 .thenThrow(new ValidationException("Not authorized"));
 
         mockMvc.perform(get("/bookings/1")
-                        .header("X-Sharer-User-Id", 2L)
+                        .header(USER_ID_HEADER, 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }
@@ -166,7 +167,7 @@ class BookingControllerTest {
                 .thenThrow(new ValidationException("Not owner"));
 
         mockMvc.perform(patch("/bookings/1?approved=true")
-                        .header("X-Sharer-User-Id", 2L)
+                        .header(USER_ID_HEADER, 2L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
     }

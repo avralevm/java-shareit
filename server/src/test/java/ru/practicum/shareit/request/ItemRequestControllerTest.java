@@ -23,6 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 @WebMvcTest(ItemRequestController.class)
 class ItemRequestControllerTest {
+    private final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     @Autowired
     private MockMvc mockMvc;
@@ -49,7 +50,7 @@ class ItemRequestControllerTest {
                 .thenReturn(testRequest);
 
         mockMvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(testRequestCreate)))
                 .andExpect(status().isOk())
@@ -65,7 +66,7 @@ class ItemRequestControllerTest {
                 .thenReturn(List.of(testRequest));
 
         mockMvc.perform(get("/requests")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -81,7 +82,7 @@ class ItemRequestControllerTest {
                 .thenReturn(List.of(testRequest));
 
         mockMvc.perform(get("/requests/all")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -97,7 +98,7 @@ class ItemRequestControllerTest {
                 .thenReturn(testRequest);
 
         mockMvc.perform(get("/requests/1")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(testRequest.getId()))
@@ -112,7 +113,7 @@ class ItemRequestControllerTest {
                 .thenThrow(new NotFoundException("Request not found"));
 
         mockMvc.perform(get("/requests/999")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 

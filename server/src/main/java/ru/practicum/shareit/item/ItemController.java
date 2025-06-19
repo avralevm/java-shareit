@@ -16,29 +16,31 @@ import java.util.List;
 @RequestMapping("/items")
 @RequiredArgsConstructor
 public class ItemController {
+    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+
     private final ItemService itemService;
 
     @GetMapping
-    public List<ItemOwnerDto> getOwnerItems(@RequestHeader("X-Sharer-User-Id") Long userId) {
+    public List<ItemOwnerDto> getOwnerItems(@RequestHeader(USER_ID_HEADER) Long userId) {
         log.info("[GET] Запрос на получение всех предметов владельца c id: {}", userId);
         return itemService.getOwnerItems(userId);
     }
 
     @GetMapping("/{id}")
-    public ItemOwnerDto getItemById(@PathVariable Long id, @RequestHeader("X-Sharer-User-Id") Long userId) {
+    public ItemOwnerDto getItemById(@PathVariable Long id, @RequestHeader(USER_ID_HEADER) Long userId) {
         log.info("[GET] Запрос на получение предмета по id: {}", id);
         return itemService.getItemById(id, userId);
     }
 
     @PostMapping
     public ItemDto createItem(@Validated(ItemDto.CreateValidation.class) @RequestBody ItemDto itemDto,
-                              @RequestHeader("X-Sharer-User-Id") Long userId) {
+                              @RequestHeader(USER_ID_HEADER) Long userId) {
         log.info("[POST] Создание предмета");
         return itemService.createItem(itemDto, userId);
     }
 
     @PatchMapping("/{id}")
-    public ItemDto updateItem(@RequestBody ItemDto itemDto, @RequestHeader("X-Sharer-User-Id") Long userId,
+    public ItemDto updateItem(@RequestBody ItemDto itemDto, @RequestHeader(USER_ID_HEADER) Long userId,
                               @PathVariable Long id) {
         log.info("[PATCH] Обновлены данные пользователя c id: {}", id);
         return itemService.updateItem(itemDto, userId, id);

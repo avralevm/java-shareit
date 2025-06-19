@@ -27,6 +27,8 @@ class ItemRequestControllerTest {
     @MockBean
     private ItemRequestClient itemRequestClient;
 
+    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+
     private final ItemRequestCreateDto testRequest = new ItemRequestCreateDto("Need a drill for home project");
 
     @Test
@@ -35,7 +37,7 @@ class ItemRequestControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(testRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -49,7 +51,7 @@ class ItemRequestControllerTest {
         ItemRequestCreateDto invalidRequest = new ItemRequestCreateDto(null);
 
         mvc.perform(post("/requests")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(invalidRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -75,7 +77,7 @@ class ItemRequestControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(get("/requests")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -88,7 +90,7 @@ class ItemRequestControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(get("/requests/all")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -101,7 +103,7 @@ class ItemRequestControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(get("/requests/1")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -114,7 +116,7 @@ class ItemRequestControllerTest {
                 .thenReturn(ResponseEntity.notFound().build());
 
         mvc.perform(get("/requests/999")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound());
 

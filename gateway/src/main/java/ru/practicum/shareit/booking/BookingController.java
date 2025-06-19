@@ -15,24 +15,26 @@ import ru.practicum.shareit.booking.dto.BookingState;
 @Slf4j
 @Validated
 public class BookingController {
+    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+
     private final BookingClient bookingClient;
 
     @PostMapping
-    public ResponseEntity<Object> createBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> createBooking(@RequestHeader(USER_ID_HEADER) Long userId,
                                            @RequestBody @Valid BookItemRequestDto requestDto) {
         log.info("Создание бронирования: {}, id пользователя={}", requestDto, userId);
         return bookingClient.createBooking(userId, requestDto);
     }
 
     @GetMapping("/{bookingId}")
-    public ResponseEntity<Object> getBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> getBooking(@RequestHeader(USER_ID_HEADER) Long userId,
                                              @PathVariable Long bookingId) {
         log.info("Запрос информации о бронировании: id брони={}, id пользователя={}", bookingId, userId);
         return bookingClient.getBooking(userId, bookingId);
     }
 
     @PatchMapping("/{bookingId}")
-    public ResponseEntity<Object> approveBooking(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> approveBooking(@RequestHeader(USER_ID_HEADER) Long userId,
                                                  @PathVariable Long bookingId,
                                                  @RequestParam Boolean approved) {
         String status = approved ? "подтверждено" : "отклонено";
@@ -42,7 +44,7 @@ public class BookingController {
     }
 
     @GetMapping
-    public ResponseEntity<Object> getUserBookings(@RequestHeader("X-Sharer-User-Id") Long userId,
+    public ResponseEntity<Object> getUserBookings(@RequestHeader(USER_ID_HEADER) Long userId,
                                               @RequestParam(name = "state", defaultValue = "ALL") String state) {
         BookingState bookingState = BookingState.from(state)
                 .orElseThrow(() -> new IllegalArgumentException("Неизвестный статус: " + state));
@@ -51,7 +53,7 @@ public class BookingController {
     }
 
     @GetMapping("/owner")
-    public ResponseEntity<Object> getOwnerBookings(@RequestHeader("X-Sharer-User-Id") Long ownerId,
+    public ResponseEntity<Object> getOwnerBookings(@RequestHeader(USER_ID_HEADER) Long ownerId,
                                                    @RequestParam(name = "state", defaultValue = "ALL") String state) {
         BookingState bookingState = BookingState.from(state)
                 .orElseThrow(() -> new IllegalArgumentException("Неизвестный статус: " + state));

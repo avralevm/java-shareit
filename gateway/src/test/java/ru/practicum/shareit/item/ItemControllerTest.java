@@ -36,6 +36,8 @@ class ItemControllerTest {
     @MockBean
     private ItemClient itemClient;
 
+    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+
     private final ItemDto testItem = new ItemDto(1L, "Test Item", "Test Description",
             1L, 1L, true, List.of());
 
@@ -47,7 +49,7 @@ class ItemControllerTest {
                 .thenReturn(ResponseEntity.ok(List.of(testItem)));
 
         mvc.perform(get("/items")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$", hasSize(1)))
@@ -64,7 +66,7 @@ class ItemControllerTest {
                 .thenReturn(ResponseEntity.ok(testItem));
 
         mvc.perform(get("/items/1")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(testItem.getId()), Long.class))
@@ -80,7 +82,7 @@ class ItemControllerTest {
                 .thenReturn(ResponseEntity.ok(testItem));
 
         mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(testItem))
                         .characterEncoding(StandardCharsets.UTF_8)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -98,7 +100,7 @@ class ItemControllerTest {
         ItemDto invalidItem = new ItemDto(null, " ", " ", null, null, null, null);
 
         mvc.perform(post("/items")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(invalidItem))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -115,7 +117,7 @@ class ItemControllerTest {
                 .thenReturn(ResponseEntity.ok(updatedItem));
 
         mvc.perform(patch("/items/1")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(updatedItem))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -160,7 +162,7 @@ class ItemControllerTest {
                 .thenReturn(ResponseEntity.ok(testComment));
 
         mvc.perform(post("/items/1/comment")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(commentDto))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -177,7 +179,7 @@ class ItemControllerTest {
         CommentDtoCreate invalidComment = new CommentDtoCreate(" ");
 
         mvc.perform(post("/items/1/comment")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(invalidComment))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))

@@ -30,6 +30,8 @@ class BookingControllerTest {
     @MockBean
     private BookingClient bookingClient;
 
+    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+
     private final BookItemRequestDto validRequest = new BookItemRequestDto(
             1L,
             LocalDateTime.now().plusDays(1),
@@ -42,7 +44,7 @@ class BookingControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(validRequest))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
@@ -60,7 +62,7 @@ class BookingControllerTest {
         );
 
         mvc.perform(post("/bookings")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .content(mapper.writeValueAsString(invalidRequest))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isBadRequest());
@@ -74,7 +76,7 @@ class BookingControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(get("/bookings/1")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -87,7 +89,7 @@ class BookingControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(patch("/bookings/1?approved=true")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -100,7 +102,7 @@ class BookingControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(get("/bookings?state=ALL")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
@@ -114,7 +116,7 @@ class BookingControllerTest {
                 .thenReturn(ResponseEntity.ok().build());
 
         mvc.perform(get("/bookings/owner?state=FUTURE")
-                        .header("X-Sharer-User-Id", 1L)
+                        .header(USER_ID_HEADER, 1L)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
 
