@@ -11,12 +11,14 @@ import ru.practicum.shareit.booking.model.Booking;
 import ru.practicum.shareit.booking.model.BookingStatus;
 import ru.practicum.shareit.booking.repository.BookingRepository;
 import ru.practicum.shareit.exception.BadRequestException;
+import ru.practicum.shareit.exception.NotFoundException;
 import ru.practicum.shareit.item.dto.*;
 import ru.practicum.shareit.item.model.Item;
 import ru.practicum.shareit.item.repository.CommentRepository;
 import ru.practicum.shareit.item.repository.ItemRepository;
 import ru.practicum.shareit.item.service.ItemService;
 import ru.practicum.shareit.item.service.ItemServiceImpl;
+import ru.practicum.shareit.request.model.ItemRequest;
 import ru.practicum.shareit.request.repository.ItemRequestRepository;
 import ru.practicum.shareit.user.dto.UserMapperImpl;
 import ru.practicum.shareit.user.model.User;
@@ -88,6 +90,37 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void createItemShouldNotSetRequestWhenRequestIdNotProvided() {
+        ItemDto itemDto = ItemDto.builder()
+                .name("Item without request")
+                .description("Description")
+                .available(true)
+                .build();
+
+        ItemDto result = itemService.createItem(itemDto, savedUser.getId());
+
+        assertNotNull(result);
+        assertNull(result.getRequestId());
+    }
+
+    @Test
+    void createItemShouldIgnoreNonExistentRequestId() {
+        Long nonExistentRequestId = 999L;
+
+        ItemDto itemDto = ItemDto.builder()
+                .name("Item with non-existent request")
+                .description("Description")
+                .available(true)
+                .requestId(nonExistentRequestId)
+                .build();
+
+        ItemDto result = itemService.createItem(itemDto, savedUser.getId());
+
+        assertNotNull(result);
+        assertNull(result.getRequestId());
+    }
+
+    @Test
     void getItemByIdShouldReturnItem() {
         ItemOwnerDto result = itemService.getItemById(savedItem.getId(), savedUser.getId());
 
@@ -118,11 +151,33 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void deleteItemShouldThrowWhenItemNotFound() {
+        Long nonExistentItemId = 999L;
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> itemService.deleteItem(nonExistentItemId));
+
+        assertEquals(String.format("Предмет с id = %d не найдена", nonExistentItemId),
+                exception.getMessage());
+    }
+
+    @Test
     void getOwnerItemsShouldReturnItemsForOwner() {
         List<ItemOwnerDto> result = itemService.getOwnerItems(savedUser.getId());
 
         assertFalse(result.isEmpty());
         assertEquals(savedItem.getId(), result.get(0).getId());
+    }
+
+    @Test
+    void getOwnerItemsShouldThrowWhenNoItemsFound() {
+        User userWithoutItems = userRepository.save(new User(null, "No Items", "noitems@example.com"));
+
+        NotFoundException exception = assertThrows(NotFoundException.class,
+                () -> itemService.getOwnerItems(userWithoutItems.getId()));
+
+        assertEquals(String.format("Предметы владельца с id = %d не найдены", userWithoutItems.getId()),
+                exception.getMessage());
     }
 
     @Test
@@ -134,8 +189,16 @@ class ItemServiceImplTest {
     }
 
     @Test
+    void searchItemsByTextShouldReturnEmptyListWhenTextIsEmpty() {
+        List<ItemDto> resultEmpty = itemService.searchItemsByText("");
+        List<ItemDto> resultNull = itemService.searchItemsByText(null);
+
+        assertTrue(resultEmpty.isEmpty());
+        assertTrue(resultNull.isEmpty());
+    }
+
+    @Test
     void createCommentShouldSaveAndReturnComment() {
-        // Сначала нужно создать завершенное бронирование
         User booker = userRepository.save(new User(null, "Booker", "booker@example.com"));
         Booking booking = bookingRepository.save(
                 Booking.builder()
