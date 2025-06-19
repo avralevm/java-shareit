@@ -14,7 +14,7 @@ import java.util.List;
 @RequestMapping("/requests")
 @RequiredArgsConstructor
 public class ItemRequestController {
-    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     private final ItemRequestService itemRequestService;
 

@@ -30,7 +30,7 @@ class BookingControllerTest {
     @MockBean
     private BookingClient bookingClient;
 
-    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     private final BookItemRequestDto validRequest = new BookItemRequestDto(
             1L,

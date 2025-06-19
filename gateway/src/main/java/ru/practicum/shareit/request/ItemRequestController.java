@@ -14,7 +14,7 @@ import ru.practicum.shareit.request.dto.ItemRequestCreateDto;
 @Slf4j
 @Validated
 public class ItemRequestController {
-    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
     private final ItemRequestClient itemRequestClient;
 
     @PostMapping

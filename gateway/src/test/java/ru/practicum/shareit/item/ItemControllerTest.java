@@ -36,7 +36,7 @@ class ItemControllerTest {
     @MockBean
     private ItemClient itemClient;
 
-    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     private final ItemDto testItem = new ItemDto(1L, "Test Item", "Test Description",
             1L, 1L, true, List.of());

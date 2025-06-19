@@ -27,7 +27,7 @@ class ItemRequestControllerTest {
     @MockBean
     private ItemRequestClient itemRequestClient;
 
-    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     private final ItemRequestCreateDto testRequest = new ItemRequestCreateDto("Need a drill for home project");
 

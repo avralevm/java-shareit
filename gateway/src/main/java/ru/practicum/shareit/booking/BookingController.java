@@ -15,7 +15,7 @@ import ru.practicum.shareit.booking.dto.BookingState;
 @Slf4j
 @Validated
 public class BookingController {
-    private final String USER_ID_HEADER = "X-Sharer-User-Id";
+    private static final String USER_ID_HEADER = "X-Sharer-User-Id";
 
     private final BookingClient bookingClient;
 
