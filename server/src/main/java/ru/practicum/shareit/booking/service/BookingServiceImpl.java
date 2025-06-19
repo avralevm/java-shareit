@@ -129,12 +129,12 @@ public class BookingServiceImpl implements BookingService {
           }
 
           List<Booking> userBookings = switch (state) {
-              case CURRENT -> bookingRepository.findCurrentBookingsByUser(ownerId);
-              case WAITING -> bookingRepository.findWaitingBookingsByUser(ownerId);
-              case PAST -> bookingRepository.findPastBookingsByUser(ownerId);
-              case REJECTED -> bookingRepository.findRejectedBookingsByUser(ownerId);
-              case FUTURE -> bookingRepository.findFutureBookingsByUser(ownerId);
-              default -> bookingRepository.findByBookerIdOrderByStartDesc(ownerId);
+              case CURRENT -> bookingRepository.findCurrentBookingsByOwner(ownerId);
+              case WAITING -> bookingRepository.findWaitingBookingsByOwner(ownerId);
+              case PAST -> bookingRepository.findPastBookingsByOwner(ownerId);
+              case REJECTED -> bookingRepository.findRejectedBookingsByOwner(ownerId);
+              case FUTURE -> bookingRepository.findFutureBookingsByOwner(ownerId);
+              default -> bookingRepository.findAllByItemOwnerIdOrderByStartDesc(ownerId);
           };
 
           return userBookings.stream()

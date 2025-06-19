@@ -71,4 +71,46 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
              LIMIT 1
              """)
     Booking findNextBooking(@Param("itemId") Long itemId);
+
+    @Query("SELECT b FROM Booking b " +
+            "JOIN b.item i " +
+            "WHERE i.owner.id = :ownerId " +
+            "AND b.start <= CURRENT_TIMESTAMP " +
+            "AND b.end >= CURRENT_TIMESTAMP " +
+            "ORDER BY b.start DESC")
+    List<Booking> findCurrentBookingsByOwner(@Param("ownerId") Long ownerId);
+
+    @Query("SELECT b FROM Booking b " +
+            "JOIN b.item i " +
+            "WHERE i.owner.id = :ownerId " +
+            "AND b.status = 'WAITING' " +
+            "ORDER BY b.start DESC")
+    List<Booking> findWaitingBookingsByOwner(@Param("ownerId") Long ownerId);
+
+    @Query("SELECT b FROM Booking b " +
+            "JOIN b.item i " +
+            "WHERE i.owner.id = :ownerId " +
+            "AND b.end < CURRENT_TIMESTAMP " +
+            "ORDER BY b.start DESC")
+    List<Booking> findPastBookingsByOwner(@Param("ownerId") Long ownerId);
+
+    @Query("SELECT b FROM Booking b " +
+            "JOIN b.item i " +
+            "WHERE i.owner.id = :ownerId " +
+            "AND b.status = 'REJECTED' " +
+            "ORDER BY b.start DESC")
+    List<Booking> findRejectedBookingsByOwner(@Param("ownerId") Long ownerId);
+
+    @Query("SELECT b FROM Booking b " +
+            "JOIN b.item i " +
+            "WHERE i.owner.id = :ownerId " +
+            "AND b.start > CURRENT_TIMESTAMP " +
+            "ORDER BY b.start DESC")
+    List<Booking> findFutureBookingsByOwner(@Param("ownerId") Long ownerId);
+
+    @Query("SELECT b FROM Booking b " +
+            "JOIN b.item i " +
+            "WHERE i.owner.id = :ownerId " +
+            "ORDER BY b.start DESC")
+    List<Booking> findAllByItemOwnerIdOrderByStartDesc(@Param("ownerId") Long ownerId);
 }

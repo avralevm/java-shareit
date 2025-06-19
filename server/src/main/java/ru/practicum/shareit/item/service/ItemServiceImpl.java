@@ -182,7 +182,6 @@ public class ItemServiceImpl implements ItemService {
         return result;
     }
 
-
     private Item findItemOrThrow(Long id) {
         return itemRepository.findById(id)
                 .orElseThrow(() -> {
