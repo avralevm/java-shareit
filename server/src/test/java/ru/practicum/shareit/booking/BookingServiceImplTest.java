@@ -286,6 +286,14 @@ class BookingServiceImplTest {
     }
 
     @Test
+    void getUserBookingsShouldReturnFutureBookings() {
+        List<BookingDto> result = bookingService.getUserBookings(booker.getId(), BookingState.FUTURE);
+
+        assertEquals(1, result.size());
+        assertEquals(booking.getId(), result.get(0).getId());
+    }
+
+    @Test
     void getOwnerBookingsShouldReturnOwnerBookings() {
         List<BookingDto> result = bookingService.getOwnerBookings(owner.getId(), BookingState.ALL);
 
